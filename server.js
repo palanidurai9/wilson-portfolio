@@ -54,13 +54,9 @@ const transporter = nodemailer.createTransport({
 const validateContactForm = [
     body('name').trim().notEmpty().withMessage('Name is required'),
     body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
-    body('phone').trim().notEmpty().withMessage('Phone number is required')
-        .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/)
-        .withMessage('Please enter a valid phone number'),
     body('projectType').trim().notEmpty().withMessage('Project type is required'),
     body('message').trim().notEmpty().withMessage('Message is required')
 ];
-
 
 // Contact form endpoint
 // Verify email configuration middleware
@@ -90,7 +86,6 @@ app.post('/api/contact', validateContactForm, verifyEmailConfig, async (req, res
                 <h2>New Contact Form Submission</h2>
                 <p><strong>Name:</strong> ${name}</p>
                 <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Phone:</strong> ${phone}</p>
                 <p><strong>Project Type:</strong> ${projectType}</p>
                 <p><strong>Message:</strong></p>
                 <p>${message}</p>
@@ -112,7 +107,7 @@ app.post('/api/contact', validateContactForm, verifyEmailConfig, async (req, res
 
         res.status(200).json({ message: 'Message sent successfully!' });
     } catch (error) {
-        console.error('Email error:', error);  // <-- this line will log actual error in Render logs
+        console.error('Email error:', error);
         let errorMessage = 'Failed to send message. Please try again.';
         if (error.code === 'EAUTH') {
             errorMessage = 'Email authentication failed. Please contact administrator.';
@@ -121,7 +116,6 @@ app.post('/api/contact', validateContactForm, verifyEmailConfig, async (req, res
         }
         res.status(500).json({ message: errorMessage, error: error.code });
     }
-    
 });
 
 app.listen(PORT, () => {
