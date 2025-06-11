@@ -112,7 +112,7 @@ app.post('/api/contact', validateContactForm, verifyEmailConfig, async (req, res
 
         res.status(200).json({ message: 'Message sent successfully!' });
     } catch (error) {
-        console.error('Email error:', error);
+        console.error('Email error:', error);  // <-- this line will log actual error in Render logs
         let errorMessage = 'Failed to send message. Please try again.';
         if (error.code === 'EAUTH') {
             errorMessage = 'Email authentication failed. Please contact administrator.';
@@ -121,6 +121,7 @@ app.post('/api/contact', validateContactForm, verifyEmailConfig, async (req, res
         }
         res.status(500).json({ message: errorMessage, error: error.code });
     }
+    
 });
 
 app.listen(PORT, () => {
